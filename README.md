@@ -34,6 +34,12 @@ This is not a critique of Silk. The tools are aimed at different primary consume
 ## Installation
 
 ```bash
+python -m pip install django-llm-profiler
+```
+
+For local development:
+
+```bash
 python -m pip install -e ".[dev]"
 ```
 
@@ -79,6 +85,26 @@ DJANGO_LLM_PROFILER = {
 
 `REPORTS_PATH` controls where timestamped JSON reports are written. `EXPORT_JSON_PATH` is still accepted as a legacy alias.
 
+Minimal setup:
+
+```python
+INSTALLED_APPS = [
+    # ...
+    "django_llm_profiler",
+]
+
+MIDDLEWARE = [
+    # ...
+    "django_llm_profiler.middleware.QueryProfilingMiddleware",
+]
+
+DJANGO_LLM_PROFILER = {
+    "ENABLED": True,
+}
+```
+
+With that setup, request traces are captured automatically and written to `.django_llm_profiler/` by default.
+
 ## Usage
 
 ### Profile a block
@@ -98,7 +124,13 @@ print(trace.summary.to_dict())
 ```python
 from django_llm_profiler import export_trace
 
-export_trace(trace, ".django-llm-profiler/homepage.json")
+export_trace(trace, ".django_llm_profiler/homepage.json")
+```
+
+If you omit the path, the package writes a timestamped report into `REPORTS_PATH` automatically:
+
+```python
+export_trace(trace)
 ```
 
 ### Analyze queries directly
@@ -134,6 +166,8 @@ def test_widget_detail(client):
     client.get("/widgets/1/")
 ```
 
+`@profile_test` stores the resulting trace on `test_widget_list.last_trace`, and `@assert_max_queries(...)` raises a helpful assertion if the budget is exceeded.
+
 ## Management commands
 
 Summarize traces:
@@ -148,6 +182,15 @@ Clear traces:
 ```bash
 python manage.py llm_profile_flush
 ```
+
+## CI
+
+This repository includes GitHub Actions workflows for:
+
+- CI on every push and pull request
+- PyPI publishing on release
+
+The CI workflow runs Ruff and pytest. The publish workflow builds distributions and uploads them to PyPI.
 
 ## Output shape
 
@@ -176,6 +219,7 @@ Default report filenames look like:
 - N+1 detection is pattern-based and intentionally conservative
 - request path include/ignore filtering is basic in this MVP
 - file storage currently lists lightweight metadata when reloading traces
+- raw SQL is still retained in captured events in this MVP, so use care before exposing reports outside trusted environments
 
 ## Roadmap
 
