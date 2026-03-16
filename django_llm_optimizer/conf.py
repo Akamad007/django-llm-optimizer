@@ -1,4 +1,4 @@
-"""Settings access for django-llm-profiler."""
+"""Settings access for django-llm-optimizer."""
 
 from __future__ import annotations
 

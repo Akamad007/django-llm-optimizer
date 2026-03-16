@@ -9,7 +9,7 @@ from django_llm_optimizer.conf import get_storage
 
 
 class Command(BaseCommand):
-    help = "Summarize stored django-llm-profiler traces."
+    help = "Summarize stored django-llm-optimizer traces."
 
     def add_arguments(self, parser) -> None:
         parser.add_argument("--format", choices=["text", "json"], default="text")

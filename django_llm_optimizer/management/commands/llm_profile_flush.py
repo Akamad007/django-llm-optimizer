@@ -6,7 +6,7 @@ from django_llm_optimizer.conf import get_storage
 
 
 class Command(BaseCommand):
-    help = "Clear stored django-llm-profiler traces."
+    help = "Clear stored django-llm-optimizer traces."
 
     def handle(self, *args, **options):
         get_storage().clear()

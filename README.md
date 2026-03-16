@@ -185,7 +185,7 @@ def sync_users():
     ...
 ```
 
-If Celery is installed and `CAPTURE_CELERY=True`, django-llm-profiler hooks Celery task execution automatically via signals.
+If Celery is installed and `CAPTURE_CELERY=True`, django-llm-optimizer hooks Celery task execution automatically via signals.
 
 You can also decorate tasks explicitly:
 
@@ -247,7 +247,7 @@ PyPI publishing is handled by [python-publish.yml](.github/workflows/python-publ
 - Publishing is triggered when a GitHub Release is published.
 - Manual dispatch is also available from GitHub Actions.
 - PyPI must be configured with a Trusted Publisher that exactly matches:
-  - GitHub owner: `akamad007`
+  - GitHub owner: `Akamad007`
   - repository name: `django-llm-optimizer`
   - workflow file path: `.github/workflows/python-publish.yml`
   - environment name: `pypi`
@@ -258,7 +258,7 @@ Maintainer note:
 - The workflow file path configured on PyPI must match exactly.
 - Reusable GitHub workflows cannot currently be used as the trusted workflow for PyPI Trusted Publishing.
 - Environment mismatch can cause publish failures.
-- Stale package names or old PyPI URLs can also cause confusion; this project publishes as `django-llm-profiler` at `https://pypi.org/project/django-llm-profiler/`.
+- Stale package names or old PyPI URLs can also cause confusion; this project publishes as `django-llm-optimizer` at `https://pypi.org/project/django-llm-optimizer/`.
 
 See [PUBLISHING.md](PUBLISHING.md) for the maintainer checklist.
 
