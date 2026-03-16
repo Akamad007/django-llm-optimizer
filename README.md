@@ -213,6 +213,23 @@ Default report filenames look like:
 .django_llm_profiler/20260315T184512123456Z-request-abc123def456.json
 ```
 
+For machine-readable aggregate diagnostics across many traces, you can use:
+
+```python
+from django_llm_profiler import get_performance_report
+
+report = get_performance_report(limit=10)
+```
+
+The aggregate report includes:
+
+- `slowest_endpoints`
+- `slowest_queries`
+- per-endpoint average and max request duration
+- per-endpoint average and max DB time
+- per-query cumulative and max duration
+- paths and callsites associated with slow query fingerprints
+
 ## Current limitations
 
 - SQL normalization is heuristic, not a full SQL parser

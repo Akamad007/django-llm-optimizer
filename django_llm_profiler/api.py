@@ -5,9 +5,10 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from pathlib import Path
 
+from django_llm_profiler.analyzers.aggregate import aggregate_traces
 from django_llm_profiler.analyzers.summary import summarize_trace
 from django_llm_profiler.collectors.context import ProfileContext, get_last_trace as get_last_profiled_trace
-from django_llm_profiler.conf import get_settings
+from django_llm_profiler.conf import get_settings, get_storage
 from django_llm_profiler.exporters.json_exporter import build_trace_filename, export_trace_json
 from django_llm_profiler.types import JSONValue, QueryEvent, RequestTrace
 
@@ -41,3 +42,8 @@ def export_trace(trace: RequestTrace, path: str | Path | None = None) -> Path:
     else:
         resolved_path = get_settings().export_directory / build_trace_filename(trace)
     return export_trace_json(trace, resolved_path)
+
+
+def get_performance_report(limit: int = 10):
+    """Return a machine-readable aggregate report across stored traces."""
+    return aggregate_traces(get_storage().list_traces(), limit=limit)

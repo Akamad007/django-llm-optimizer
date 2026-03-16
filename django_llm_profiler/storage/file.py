@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
 
 from django_llm_profiler.conf import get_settings
 from django_llm_profiler.exporters.json_exporter import build_trace_filename, export_trace_json
@@ -25,17 +24,7 @@ class FileStorage(BaseStorage):
             return traces
         for file_path in sorted(self.base_path.glob("*.json")):
             payload = json.loads(file_path.read_text(encoding="utf-8"))
-            traces.append(
-                RequestTrace(
-                    trace_id=payload["trace_id"],
-                    trace_type=payload["trace_type"],
-                    started_at=datetime.fromisoformat(payload["started_at"]),
-                    ended_at=datetime.fromisoformat(payload["ended_at"]) if payload["ended_at"] else None,
-                    metadata=payload.get("metadata", {}),
-                    queries=[],
-                    summary=None,
-                )
-            )
+            traces.append(RequestTrace.from_dict(payload))
         return traces
 
     def clear(self) -> None:
