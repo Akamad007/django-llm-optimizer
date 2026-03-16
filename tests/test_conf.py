@@ -1,0 +1,16 @@
+from django.test import override_settings
+
+from django_llm_profiler.conf import DEFAULTS, get_settings
+
+
+def test_default_settings_are_loaded():
+    profiler_settings = get_settings()
+    assert profiler_settings.enabled is True
+    assert profiler_settings.max_stack_frames == DEFAULTS["MAX_STACK_FRAMES"]
+
+
+@override_settings(DJANGO_LLM_PROFILER={"ENABLED": False, "MAX_STACK_FRAMES": 3})
+def test_settings_override_defaults():
+    profiler_settings = get_settings()
+    assert profiler_settings.enabled is False
+    assert profiler_settings.max_stack_frames == 3
