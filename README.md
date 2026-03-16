@@ -58,7 +58,7 @@ Add middleware if you want request profiling:
 ```python
 MIDDLEWARE = [
     # ...
-    "django_llm_profiler.middleware.QueryProfilingMiddleware",
+    "django_llm_optimzer.middleware.QueryProfilingMiddleware",
 ]
 ```
 
@@ -79,8 +79,8 @@ DJANGO_LLM_PROFILER = {
     "SLOW_QUERY_MS": 100.0,
     "DUPLICATE_QUERY_MIN_REPETITIONS": 3,
     "NPLUSONE_MIN_REPETITIONS": 5,
-    "STORAGE_BACKEND": "django_llm_profiler.storage.file.FileStorage",
-    "REPORTS_PATH": ".django_llm_profiler",
+    "STORAGE_BACKEND": "django_llm_optimzer.storage.file.FileStorage",
+    "REPORTS_PATH": ".django_llm_optimzer",
     "IGNORE_PATH_PREFIXES": [],
     "INCLUDE_PATH_PREFIXES": [],
 }
@@ -98,7 +98,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     # ...
-    "django_llm_profiler.middleware.QueryProfilingMiddleware",
+    "django_llm_optimzer.middleware.QueryProfilingMiddleware",
 ]
 
 DJANGO_LLM_PROFILER = {
@@ -106,7 +106,7 @@ DJANGO_LLM_PROFILER = {
 }
 ```
 
-With that setup, request traces are captured automatically and written to `.django_llm_profiler/` by default.
+With that setup, request traces are captured automatically and written to `.django_llm_optimzer/` by default.
 
 Celery task capture is automatic when Celery is installed and `CAPTURE_CELERY=True`. Temporal capture is explicit via decorators because Temporal execution is typically defined in application code rather than Django middleware.
 
@@ -115,7 +115,7 @@ Celery task capture is automatic when Celery is installed and `CAPTURE_CELERY=Tr
 ### Profile a block
 
 ```python
-from django_llm_profiler import get_last_trace, profile_block
+from django_llm_optimzer import get_last_trace, profile_block
 
 with profile_block(name="homepage"):
     response = client.get("/")
@@ -127,9 +127,9 @@ print(trace.summary.to_dict())
 ### Export a trace
 
 ```python
-from django_llm_profiler import export_trace
+from django_llm_optimzer import export_trace
 
-export_trace(trace, ".django_llm_profiler/homepage.json")
+export_trace(trace, ".django_llm_optimzer/homepage.json")
 ```
 
 If you omit the path, the package writes a timestamped report into `REPORTS_PATH` automatically:
@@ -141,7 +141,7 @@ export_trace(trace)
 ### Analyze queries directly
 
 ```python
-from django_llm_profiler import analyze_queries
+from django_llm_optimzer import analyze_queries
 
 summary = analyze_queries(trace.queries)
 ```
@@ -151,7 +151,7 @@ summary = analyze_queries(trace.queries)
 Context manager usage:
 
 ```python
-from django_llm_profiler.testing.context import profile_block
+from django_llm_optimzer.testing.context import profile_block
 
 with profile_block(name="list-view-test"):
     response = self.client.get("/widgets/")
@@ -160,7 +160,7 @@ with profile_block(name="list-view-test"):
 Decorator usage:
 
 ```python
-from django_llm_profiler.testing.decorators import assert_max_queries, profile_test
+from django_llm_optimzer.testing.decorators import assert_max_queries, profile_test
 
 @profile_test
 def test_widget_list(client):
@@ -190,7 +190,7 @@ If Celery is installed and `CAPTURE_CELERY=True`, django-llm-profiler hooks Cele
 You can also decorate tasks explicitly:
 
 ```python
-from django_llm_profiler.integrations import profile_celery_task
+from django_llm_optimzer.integrations import profile_celery_task
 
 @profile_celery_task
 def sync_users():
@@ -200,7 +200,7 @@ def sync_users():
 Temporal activities and workflows:
 
 ```python
-from django_llm_profiler.integrations import (
+from django_llm_optimzer.integrations import (
     profile_temporal_activity,
     profile_temporal_workflow,
 )
@@ -280,13 +280,13 @@ The JSON output is designed to be stable enough for automated post-processing ra
 Default report filenames look like:
 
 ```text
-.django_llm_profiler/20260315T184512123456Z-request-abc123def456.json
+.django_llm_optimzer/20260315T184512123456Z-request-abc123def456.json
 ```
 
 For machine-readable aggregate diagnostics across many traces, you can use:
 
 ```python
-from django_llm_profiler import get_performance_report
+from django_llm_optimzer import get_performance_report
 
 report = get_performance_report(limit=10)
 ```
